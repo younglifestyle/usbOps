@@ -5,8 +5,8 @@ import (
 )
 
 const (
-	apogee = 0xba57 // 0xba57
-	sp420  = 0x1001 // 0x1001
+	stm32Vid = 0x0483 // 0xba57
+	stm32Pid  = 0x5720 // 0x1001
 )
 
 // HotPlugHandler hotplug apogee wrapper

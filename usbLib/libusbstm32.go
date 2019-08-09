@@ -58,13 +58,13 @@ func (l *LibStmUsbFct) platformInit() {
 }
 
 func (l *LibStmUsbFct) usbevt(e gousb.HotplugEvent) {
-	log.Debugf("Got event %v\n", e)
-
 	usbDesc, err := e.DeviceDesc()
 	if err != nil {
 		log.Println(err)
 		return
 	}
+
+	log.Debug("get config : ", usbDesc.String())
 
 	if isSupported(usbDesc) {
 		var stmDev *Stm32UsbDev
@@ -100,12 +100,12 @@ func (l *LibStmUsbFct) usbevt(e gousb.HotplugEvent) {
 
 func (l *LibStmUsbFct) mkStm32UsbDev(usbDesc *gousb.DeviceDesc) (*Stm32UsbDev, error) {
 	stm32Dev := Stm32UsbDev{Name: "stm32", UUID: deviceUUID(usbDesc)}
-	cmm := l.get(usbDesc)
-	err := cmm.Open()
+	stm32Dev.cmm = l.get(usbDesc)
+	err := stm32Dev.cmm.Open()
 	if err != nil {
 		log.Errorf("Error opening %s : %s\n", usbDesc, err)
 
-		cmm.Close()
+		stm32Dev.cmm.Close()
 		return nil, err
 	}
 
@@ -119,5 +119,5 @@ func deviceUUID(d *gousb.DeviceDesc) string {
 }
 
 func isSupported(dd *gousb.DeviceDesc) bool {
-	return dd.Vendor == gousb.ID(apogee) && dd.Product == gousb.ID(sp420)
+	return dd.Vendor == gousb.ID(stm32Vid) && dd.Product == gousb.ID(stm32Pid)
 }

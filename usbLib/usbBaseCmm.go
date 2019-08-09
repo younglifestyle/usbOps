@@ -2,6 +2,7 @@ package usbLib
 
 import (
 	"errors"
+	"fmt"
 	"github.com/google/gousb"
 	log "github.com/sirupsen/logrus"
 )
@@ -12,6 +13,7 @@ type communication interface {
 	Read(buffer []byte) (int, error)
 	Write(bytes string) (int, error)
 	Close() error
+	Control(rType uint8, request uint8, val uint16, idx uint16, data []byte) (int, error)
 }
 
 // libUsbStmComm: libusb communication implementation
@@ -48,6 +50,7 @@ func (st *libUsbStmComm) Open() error {
 		st.Close()
 		return err
 	}
+
 	st.intf, err = st.conf.Interface(0, 0)
 	if err != nil {
 		log.Error("interface error,", err)
@@ -105,22 +108,43 @@ func (st *libUsbStmComm) Close() error {
 	var err error
 
 	if st.intf != nil {
+
+		fmt.Println("inter close")
+
 		st.intf.Close()
 		st.intf = nil
 	}
 	if st.conf != nil {
+		fmt.Println("conf close")
+
 		st.conf.Close()
 		st.conf = nil
 	}
 	if st.dev != nil {
+		fmt.Println("dev close")
+
 		st.dev.Close()
 		st.dev = nil
 	}
 
 	if st.ctx != nil {
+		fmt.Println("ctx close")
+
 		err = st.ctx.Close()
 		st.ctx = nil
 	}
 
 	return err
+}
+
+func (st *libUsbStmComm) Control(rType uint8, request uint8, val uint16, idx uint16, data []byte) (int, error) {
+
+	if st.dev == nil{
+		fmt.Println("dev nil")
+	}
+	if data == nil {
+		fmt.Println("data nil")
+	}
+
+	return st.dev.Control(rType, request, val, idx, data)
 }
