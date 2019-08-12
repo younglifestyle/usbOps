@@ -26,17 +26,5 @@ func main() {
 	}
 	defer stmUsbDev.Close()
 
-	bytes := []byte{0xf0, 0x80, 0x02, 0, 0, 0}
-
-	writeBt, err := stmUsbDev.Write(bytes)
-	fmt.Println(writeBt, err)
-
-	writeBt, err = stmUsbDev.Read()
-	fmt.Println(writeBt, err)
-
-	//i, err := stmUsbDev.Control(gousb.ControlOut, 0, 0, 0,
-	//	bytes)
-	//fmt.Println(i, err)
-
 	select {}
 }

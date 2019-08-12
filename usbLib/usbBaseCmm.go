@@ -11,7 +11,7 @@ type communication interface {
 	Open() error
 	IsOpen() bool
 	Read(buffer []byte) (int, error)
-	Write(bytes string) (int, error)
+	Write(bytes []byte) (int, error)
 	Close() error
 	Control(rType uint8, request uint8, val uint16, idx uint16, data []byte) (int, error)
 }
@@ -60,6 +60,9 @@ func (st *libUsbStmComm) Open() error {
 	log.Debugf("interface : %+v", st.intf.Setting)
 
 	for epNum, endpoints := range st.intf.Setting.Endpoints {
+
+		fmt.Println("TransferType : ", endpoints.TransferType, "direction : ", endpoints.Direction)
+
 		if endpoints.Direction == gousb.EndpointDirectionOut {
 			st.output, err = st.intf.OutEndpoint(int(epNum))
 			if err != nil {
@@ -86,21 +89,15 @@ func (st *libUsbStmComm) IsOpen() bool {
 
 func (st *libUsbStmComm) Read(buffer []byte) (readBt int, err error) {
 	readBt, err = st.input.Read(buffer)
-	if err != nil {
-		log.Errorf("read %v", err)
-	} else {
-		log.Debugf("read %x\n", []byte(buffer))
-	}
+
+	fmt.Println("read base : ", readBt)
+
 	return
 }
 
-func (st *libUsbStmComm) Write(bytes string) (writeBt int, err error) {
+func (st *libUsbStmComm) Write(bytes []byte) (writeBt int, err error) {
 	writeBt, err = st.output.Write([]byte(bytes))
-	if err != nil {
-		log.Errorf("write %v", err)
-	} else {
-		log.Debugf("write %x\n", []byte(bytes))
-	}
+
 	return
 }
 
@@ -139,7 +136,7 @@ func (st *libUsbStmComm) Close() error {
 
 func (st *libUsbStmComm) Control(rType uint8, request uint8, val uint16, idx uint16, data []byte) (int, error) {
 
-	if st.dev == nil{
+	if st.dev == nil {
 		fmt.Println("dev nil")
 	}
 	if data == nil {
