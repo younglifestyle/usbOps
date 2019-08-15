@@ -2,29 +2,38 @@ package main
 
 import (
 	"fmt"
-	"usbMonitor/usbLib"
+	"time"
+	"usbOps/usbLib"
 
 	log "github.com/sirupsen/logrus"
 )
-
-type tyUSBCmd_GetBIBInfo struct {
-	bPrivCMD    uint8  //SCSI_PrivateCMD
-	bOP         uint8  //控制命令码:OP_BIBInfo
-	dwInfoIndex uint32 //指明需要返回的哪些信息
-}
 
 func main() {
 
 	log.SetLevel(log.DebugLevel)
 
 	testDev := usbLib.NewStm32Manager()
-
 	stmUsbDev, err := usbLib.FindUsbOne(testDev)
 	if err != nil {
 		fmt.Println("find error :", err)
 		return
 	}
 	defer stmUsbDev.Close()
+
+	// simple test
+	bytes := []byte{0xe0, 0x80, 0x02}
+	// send CBW
+	writeBt, err := stmUsbDev.SendMassStorageCommand(bytes, 20, uint32(time.Now().Unix()))
+	fmt.Println("send command : ", writeBt, err)
+
+	// read data
+	buffer := make([]byte, 52)
+	writeBt, err = stmUsbDev.Read(buffer)
+	fmt.Println(writeBt, err)
+
+	// read CSW
+	writeBt, err = stmUsbDev.Read(buffer)
+	fmt.Println(writeBt, err)
 
 	select {}
 }

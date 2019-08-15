@@ -4,6 +4,7 @@ import (
 	"reflect"
 	"unsafe"
 )
+
 // CBW  DATA  CSW
 // Section 5.1: Command Block Wrapper (CBW)
 type CommandBlockWrapper struct {
@@ -13,7 +14,7 @@ type CommandBlockWrapper struct {
 	bmCBWFlags             uint8
 	bCBWLUN                uint8
 	bCBWCBLength           uint8
-	CBWCB                  []uint8
+	CBWCB                  [16]uint8
 }
 
 // Section 5.2: Command Status Wrapper (CSW)
@@ -33,5 +34,3 @@ func MyStructToBytes(s *CommandBlockWrapper) []byte {
 	x.Data = uintptr(unsafe.Pointer(s))
 	return *(*[]byte)(unsafe.Pointer(&x))
 }
-
-

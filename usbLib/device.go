@@ -49,15 +49,15 @@ func (s *Stm32UsbDev) Write(input []byte) (writeBt int, err error) {
 	return s.cmm.Write(input)
 }
 
-func (s *Stm32UsbDev) SendMassStorageCommand(input []byte) (writeBt int, err error) {
+func (s *Stm32UsbDev) SendMassStorageCommand(input []byte,dCBWDataTransferLength, expectTag uint32) (writeBt int, err error) {
 
 	var cbw CommandBlockWrapper
 	cbw.dCBWSignature[0] = 'U'
 	cbw.dCBWSignature[1] = 'S'
 	cbw.dCBWSignature[2] = 'B'
 	cbw.dCBWSignature[3] = 'C'
-	cbw.dCBWTag = 0x89
-	cbw.dCBWDataTransferLength = 32
+	cbw.dCBWTag = expectTag
+	cbw.dCBWDataTransferLength = dCBWDataTransferLength
 	cbw.bmCBWFlags = gousb.ControlOut
 
 	// gousb.ControlOut : 0x0 ,   gousb.ControlIn : 0x80
