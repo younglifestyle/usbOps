@@ -49,7 +49,7 @@ func (s *Stm32UsbDev) Write(input []byte) (writeBt int, err error) {
 	return s.cmm.Write(input)
 }
 
-func (s *Stm32UsbDev) SendMassStorageCommand(input []byte,dCBWDataTransferLength, expectTag uint32) (writeBt int, err error) {
+func (s *Stm32UsbDev) SendMassStorageCommand(input []byte, dCBWDataTransferLength, expectTag uint32) (writeBt int, err error) {
 
 	var cbw CommandBlockWrapper
 	cbw.dCBWSignature[0] = 'U'

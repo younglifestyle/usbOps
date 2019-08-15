@@ -6,7 +6,7 @@ import (
 
 const (
 	stm32Vid = 0x0413
-	stm32Pid  = 0x5320
+	stm32Pid = 0x5320
 )
 
 // HotPlugHandler hotplug apogee wrapper
