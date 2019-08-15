@@ -1,0 +1,7 @@
+## USB简单操作
+使用gousb对usb相关设备进行简单的操作，gousb是一个Cgo库，在使用时需要提前部署好相关环境。
+参考：https://github.com/google/gousb
+
+## gousb
+因为使用到的gousb版本是加入了监听usb下盘与上盘event的，主库还未合并该特性，所以在我的仓库中，将这个特性给合并进主库了，若主库哪天加入了改特性，优先选择使用主库。
+使用：https://github.com/younglifestyle/gousb
